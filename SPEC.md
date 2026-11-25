@@ -41,7 +41,7 @@ OCR, notes, freehand drawing on the page, shapes, text boxes, stamps, typed, ima
 
 ## Naming
 
-The product is Agentic PDF. Until 0.1.4 it shipped as PDF Reader. From 0.2.0 the bundle is `Agentic PDF.app` with identifier `app.agenticpdf.desktop`, the executable is `agenticpdf`, release files are `agenticpdf-<platform>.zip`, environment variables start with `AGENTICPDF_`, the MCP server reports the name `agenticpdf`, and the repository is `joelfickson/agenticpdf`. The domain chosen for the site is agenticpdf.app; it is not registered or attached yet, so links still point at the Vercel address.
+The product is Agentic PDF. Until 0.1.4 it shipped as PDF Reader. From 0.2.0 the bundle is `Agentic PDF.app` with identifier `app.agenticpdf.desktop`, the executable is `agenticpdf`, release files are `agenticpdf-<platform>.zip`, environment variables start with `AGENTICPDF_`, the MCP server reports the name `agenticpdf`, and the repository is `joentrust/agenticpdf`. The domain chosen for the site is agenticpdf.app; it is not registered or attached yet, so links still point at the Vercel address.
 
 On first launch the app copies `recent.tsv` and `updates.conf` from the former data folder (`org.pdfreader.desktop` on macOS, `PDF Reader` under `%APPDATA%` on Windows) when the new folder does not exist yet. It never overwrites newer settings and leaves the former folder in place.
 

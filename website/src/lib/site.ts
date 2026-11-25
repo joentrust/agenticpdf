@@ -1,4 +1,4 @@
-export const REPO_SLUG = "joelfickson/agenticpdf";
+export const REPO_SLUG = "joentrust/agenticpdf";
 export const REPO_URL = `https://github.com/${REPO_SLUG}`;
 export const RELEASES_URL = `${REPO_URL}/releases`;
 export const AGENT_ISSUE_URL = `${REPO_URL}/issues/18`;

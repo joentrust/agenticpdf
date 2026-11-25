@@ -101,9 +101,7 @@ function SourceCommands() {
     <div className="source-commands">
       <h3>Clone</h3>
       <pre>
-        {
-          "git clone https://github.com/joelfickson/agenticpdf.git\ncd agenticpdf"
-        }
+        {"git clone https://github.com/joentrust/agenticpdf.git\ncd agenticpdf"}
       </pre>
       <h3>Run</h3>
       <pre>{"uv run scripts/setup_pdfium.py\ncargo run --release"}</pre>

@@ -1,8 +1,8 @@
 # Agentic PDF
 
-[![Check](https://github.com/joelfickson/agenticpdf/actions/workflows/check.yml/badge.svg)](https://github.com/joelfickson/agenticpdf/actions/workflows/check.yml) [![Website](https://github.com/joelfickson/agenticpdf/actions/workflows/website.yml/badge.svg)](https://github.com/joelfickson/agenticpdf/actions/workflows/website.yml)
+[![Check](https://github.com/joentrust/agenticpdf/actions/workflows/check.yml/badge.svg)](https://github.com/joentrust/agenticpdf/actions/workflows/check.yml) [![Website](https://github.com/joentrust/agenticpdf/actions/workflows/website.yml/badge.svg)](https://github.com/joentrust/agenticpdf/actions/workflows/website.yml)
 
-A fast, native PDF reader for macOS and Windows, built with Rust, GPUI, and PDFium. Next, the AI agents you already use will read alongside you through the Agent Client Protocol ([issue #18](https://github.com/joelfickson/agenticpdf/issues/18)).
+A fast, native PDF reader for macOS and Windows, built with Rust, GPUI, and PDFium. Next, the AI agents you already use will read alongside you through the Agent Client Protocol ([issue #18](https://github.com/joentrust/agenticpdf/issues/18)).
 
 Website and downloads: <https://agentic-pdf-eta.vercel.app>
 
@@ -15,7 +15,7 @@ Install Rust stable and uv. On macOS, install Xcode and select its command-line 
 Clone the repository:
 
 ```sh
-git clone https://github.com/joelfickson/agenticpdf.git
+git clone https://github.com/joentrust/agenticpdf.git
 cd agenticpdf
 ```
 

@@ -17,7 +17,7 @@ pub(crate) use release::Release;
 pub(crate) use settings::Settings;
 pub(crate) use version::Version;
 
-pub(crate) const REPOSITORY: &str = "joelfickson/agenticpdf";
+pub(crate) const REPOSITORY: &str = "joentrust/agenticpdf";
 const RELEASE_TAG: Option<&str> = option_env!("AGENTICPDF_RELEASE_TAG");
 const UNPACKED: &str = "unpacked";
 const VERIFIED: &str = "verified";
