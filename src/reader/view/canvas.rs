@@ -3,12 +3,13 @@ use super::{super::Reader, CANVAS_PADDING};
 use crate::pdf::ViewKey;
 use crate::reader::actions::Open;
 use crate::reader::column::Column;
+use crate::reader::zooming;
 use crate::ui::{
     icon::Icon,
     kit::clickable,
     kit::{Kind, icon, text_button},
 };
-use gpui::{AnyElement, Context, IntoElement, Window, div, prelude::*, px};
+use gpui::{AnyElement, Context, IntoElement, ScrollWheelEvent, Window, div, img, prelude::*, px};
 
 impl Reader {
     pub(in crate::reader) fn canvas(
@@ -61,6 +62,10 @@ impl Reader {
                 .into_any_element()
         };
         let presenting = self.presenting.is_some();
+        let wide = self
+            .content_width(window)
+            .map(|width| width + CANVAS_PADDING * 2.0)
+            .filter(|width| *width > self.available_width(window) + CANVAS_PADDING * 2.0);
         clickable("document-canvas")
             .when(presenting, |canvas| canvas.bg(gpui::black()))
             .flex_1()
@@ -78,7 +83,20 @@ impl Reader {
             }))
             .child(
                 div()
+                    .id("canvas-stage")
+                    .on_scroll_wheel(cx.listener(|this, event: &ScrollWheelEvent, window, cx| {
+                        if this.has_document() && zooming::wants_zoom(event) {
+                            cx.stop_propagation();
+                            this.zoom_by(
+                                zooming::wheel_factor(&event.delta),
+                                event.position,
+                                window,
+                                cx,
+                            );
+                        }
+                    }))
                     .min_w_full()
+                    .when_some(wide, |stage, width| stage.min_w(px(width)))
                     .min_h_full()
                     .pt(px(if presenting { 24.0 } else { 28.0 }))
                     .px(px(CANVAS_PADDING))
@@ -88,6 +106,24 @@ impl Reader {
                     .when(!presenting, |stage| stage.items_start())
                     .child(div().mx_auto().flex_shrink_0().child(content)),
             )
+    }
+
+    fn stale_page(&self, session: u64, page: usize) -> Option<AnyElement> {
+        let shown = self
+            .image_key
+            .as_ref()
+            .filter(|key| key.session == session && key.page == page)
+            .and(self.image.as_ref());
+        let image = shown.or_else(|| {
+            self.pages
+                .find(|key| key.session == session && key.page == page)
+        })?;
+        Some(
+            img(image.image.clone())
+                .size_full()
+                .rounded(px(2.0))
+                .into_any_element(),
+        )
     }
 
     fn column_element(
@@ -134,9 +170,13 @@ impl Reader {
                     .left(px(column.lefts[page]))
                     .w(px(width))
                     .h(px(height))
-                    .child(content.unwrap_or_else(|| {
-                        sheet_placeholder(width, height, page).into_any_element()
-                    }))
+                    .child(
+                        content
+                            .or_else(|| self.stale_page(session, page))
+                            .unwrap_or_else(|| {
+                                sheet_placeholder(width, height, page).into_any_element()
+                            }),
+                    )
                     .into_any_element()
             })
             .collect();

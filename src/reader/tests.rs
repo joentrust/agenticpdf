@@ -2049,6 +2049,11 @@ fn every_screen_renders_and_survives_hover_in_both_themes(cx: &mut TestAppContex
             r.tabs.current_mut().unwrap().lock = Some(tabs::Lock::Checking);
             cx.notify();
         }),
+        ("zoom field invalid", |r, _, cx| {
+            r.set_overlay(Overlay::ZoomMenu, cx);
+            r.chrome.zoom_input.insert("650");
+            r.chrome.zoom_invalid = true;
+        }),
         ("password cancelled", |r, _, cx| {
             r.tabs.current_mut().unwrap().lock = Some(tabs::Lock::Cancelled);
             cx.notify();
@@ -2723,4 +2728,149 @@ fn update_ready_control_popover_and_settings_states(cx: &mut TestAppContext) {
         })
     });
     assert!(installing);
+}
+
+#[gpui::test]
+fn zoom_field_and_modifier_wheel_zoom_around_the_pointer(cx: &mut TestAppContext) {
+    use gpui::{Modifiers, ScrollDelta, ScrollWheelEvent, TouchPhase};
+
+    cx.update(|cx| cx.bind_keys(crate::app::bindings()));
+    let (_sender, events) = async_channel::bounded(2);
+    let (reader, cx) = cx
+        .add_window_view(|window, cx| Reader::new(Vec::new(), Worker::idle(), events, window, cx));
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    cx.update(|window, cx| {
+        reader.update(cx, |reader, cx| {
+            reader.focus.focus(window);
+            reader.open_paths(vec![root.join("tests/fixtures/reading.pdf")], window, cx);
+            let generation = reader.generation;
+            reader.receive(
+                Event::Metadata {
+                    generation,
+                    count: 9,
+                    sizes: Some(Arc::new(vec![(612.0, 792.0); 9])),
+                },
+                window,
+                cx,
+            );
+            reader.set_zoom(Some(100), window, cx);
+        })
+    });
+    cx.run_until_parked();
+    cx.update(|_, cx| {
+        reader.update(cx, |reader, _| {
+            let tab = reader.tabs.current_mut().unwrap();
+            tab.scroll.set_offset(point(px(0.0), px(-1500.0)));
+        })
+    });
+    cx.run_until_parked();
+
+    let under = |cx: &mut gpui::VisualTestContext, pointer: gpui::Point<gpui::Pixels>| {
+        cx.read(|cx| {
+            let tab = reader.read(cx).tabs.current().unwrap();
+            let column = tab.column.clone().unwrap();
+            let bounds = tab.scroll.bounds();
+            let offset = tab.scroll.offset();
+            let x = f32::from(pointer.x - bounds.origin.x - offset.x);
+            let y = f32::from(pointer.y - bounds.origin.y - offset.y) - column::COLUMN_TOP;
+            let viewport = f32::from(bounds.size.width);
+            let left = ((viewport - column.width) / 2.0).max(view::CANVAS_PADDING);
+            let page = column.tops.partition_point(|top| *top <= y) - 1;
+            (
+                page,
+                (x - left - column.lefts[page]) / column.widths[page],
+                (y - column.tops[page]) / column.heights[page],
+            )
+        })
+    };
+    let zoom = |cx: &mut gpui::VisualTestContext| {
+        cx.read(|cx| reader.read(cx).tabs.current().unwrap().zoom)
+    };
+    let bounds = cx.read(|cx| reader.read(cx).tabs.current().unwrap().scroll.bounds());
+    let pointer = bounds.origin + point(bounds.size.width * 0.6, px(240.0));
+    let modifiers = if cfg!(target_os = "macos") {
+        Modifiers::command()
+    } else {
+        Modifiers::control()
+    };
+    let wheel = |cx: &mut gpui::VisualTestContext, y: f32, modifiers: Modifiers| {
+        cx.simulate_event(ScrollWheelEvent {
+            position: pointer,
+            delta: ScrollDelta::Pixels(point(px(0.0), px(y))),
+            modifiers,
+            touch_phase: TouchPhase::Moved,
+        });
+        cx.run_until_parked();
+    };
+
+    let before = under(cx, pointer);
+    wheel(cx, 40.0, modifiers);
+    assert_eq!(zoom(cx), Some(149));
+    let after = under(cx, pointer);
+    assert_eq!(before.0, after.0);
+    assert!((before.2 - after.2).abs() < 0.01, "{before:?} {after:?}");
+
+    wheel(cx, 40.0, modifiers);
+    assert_eq!(zoom(cx), Some(223));
+    let wide = under(cx, pointer);
+    assert_eq!(after.0, wide.0);
+    assert!((after.1 - wide.1).abs() < 0.01, "{after:?} {wide:?}");
+    assert!((after.2 - wide.2).abs() < 0.01, "{after:?} {wide:?}");
+    wheel(cx, 20.0, modifiers);
+    let wider = under(cx, pointer);
+    assert!((wide.1 - wider.1).abs() < 0.01, "{wide:?} {wider:?}");
+    assert!((wide.2 - wider.2).abs() < 0.01, "{wide:?} {wider:?}");
+
+    for y in [-20.0, -40.0, -40.0] {
+        wheel(cx, y, modifiers);
+    }
+    assert_eq!(zoom(cx), Some(100));
+    let back = under(cx, pointer);
+    assert_eq!(back.0, before.0);
+    assert!((back.2 - before.2).abs() < 0.01);
+
+    let offset = cx.read(|cx| reader.read(cx).tabs.current().unwrap().scroll.offset());
+    wheel(cx, -40.0, Modifiers::default());
+    assert_eq!(zoom(cx), Some(100));
+    assert_ne!(
+        cx.read(|cx| reader.read(cx).tabs.current().unwrap().scroll.offset()),
+        offset
+    );
+
+    wheel(cx, 4000.0, modifiers);
+    assert_eq!(zoom(cx), Some(400));
+    for _ in 0..3 {
+        wheel(cx, -1.0, modifiers);
+    }
+    assert!(zoom(cx).unwrap() < 400);
+
+    cx.update(|_, cx| {
+        reader.update(cx, |reader, cx| {
+            reader.set_overlay(chrome::Overlay::ZoomMenu, cx);
+            assert_eq!(reader.chrome.input, chrome::Input::Zoom);
+            assert!(reader.chrome.zoom_input.selected());
+        })
+    });
+    cx.run_until_parked();
+    cx.simulate_keystrokes("6 5 0 enter");
+    cx.read(|cx| {
+        let reader = reader.read(cx);
+        assert!(reader.chrome.zoom_invalid);
+        assert_eq!(reader.chrome.overlay, chrome::Overlay::ZoomMenu);
+    });
+    cx.simulate_keystrokes("2 0 0 enter");
+    assert_eq!(zoom(cx), Some(200));
+    cx.read(|cx| {
+        let reader = reader.read(cx);
+        assert_eq!(reader.chrome.overlay, chrome::Overlay::None);
+        assert_eq!(reader.chrome.input, chrome::Input::None);
+    });
+    cx.update(|_, cx| {
+        reader.update(cx, |reader, cx| {
+            reader.set_overlay(chrome::Overlay::ZoomMenu, cx)
+        })
+    });
+    cx.simulate_keystrokes("7 5 escape");
+    assert_eq!(zoom(cx), Some(200));
+    cx.read(|cx| assert_eq!(reader.read(cx).chrome.overlay, chrome::Overlay::None));
 }

@@ -41,6 +41,13 @@ pub fn page_painted(cx: &mut App) {
 }
 
 const SCROLL: &str = "scroll";
+const ZOOM: &str = "zoom";
+pub const ZOOM_STEPS: usize = 60;
+
+pub fn zooming() -> bool {
+    static ENABLED: OnceLock<bool> = OnceLock::new();
+    *ENABLED.get_or_init(|| std::env::var(VARIABLE).is_ok_and(|value| value == ZOOM))
+}
 pub const SCROLL_STEP_PX: f32 = 120.0;
 
 pub fn scrolling() -> bool {
@@ -61,6 +68,10 @@ impl ScrollProbe {
     }
 
     pub fn report(&self, pages: usize, cx: &mut App) {
+        self.report_as("scroll", pages, cx);
+    }
+
+    pub fn report_as(&self, kind: &str, pages: usize, cx: &mut App) {
         let mut gaps: Vec<f64> = self
             .frames
             .windows(2)
@@ -77,7 +88,7 @@ impl ScrollProbe {
             _ => 0.0,
         };
         println!(
-            "scroll_pages={pages} frames={} seconds={total:.2} frame_ms_median={:.2} frame_ms_p95={:.2} frame_ms_max={:.2} frames_over_33ms={} frames_with_unrendered_visible_page={}",
+            "{kind}_pages={pages} frames={} seconds={total:.2} frame_ms_median={:.2} frame_ms_p95={:.2} frame_ms_max={:.2} frames_over_33ms={} frames_with_unrendered_visible_page={}",
             self.frames.len(),
             at(0.5),
             at(0.95),

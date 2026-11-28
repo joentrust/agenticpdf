@@ -204,6 +204,7 @@ impl Reader {
                     Input::Agent => self.agent.composer.insert(&line),
                     Input::SignName => self.chrome.sign_name.insert(&line),
                     Input::Password => self.chrome.password.insert(&line),
+                    Input::Zoom => self.chrome.zoom_input.insert(&line),
                     Input::None => false,
                 };
                 if edited && self.chrome.input == Input::Palette {
@@ -300,6 +301,24 @@ impl Reader {
                     cx.stop_propagation();
                 }
                 _ => {
+                    cx.stop_propagation();
+                    cx.notify();
+                }
+            },
+            Input::Zoom => match self.chrome.zoom_input.handle(keystroke) {
+                FieldKey::Ignored => {}
+                FieldKey::Submit => {
+                    self.submit_zoom_field(window, cx);
+                    cx.stop_propagation();
+                }
+                FieldKey::Cancel => {
+                    self.set_overlay(Overlay::None, cx);
+                    cx.stop_propagation();
+                }
+                key => {
+                    if key == FieldKey::Edited {
+                        self.chrome.zoom_invalid = false;
+                    }
                     cx.stop_propagation();
                     cx.notify();
                 }

@@ -89,6 +89,7 @@ impl Reader {
 impl Render for Reader {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         self.drive_scroll_probe(window, cx);
+        self.drive_zoom_probe(window, cx);
         self.fit_presentation(window);
         self.request(window);
         let theme = self.chrome.theme;

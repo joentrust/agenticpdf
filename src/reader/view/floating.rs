@@ -381,6 +381,7 @@ impl Reader {
             .p(px(6.0))
             .flex()
             .flex_col()
+            .child(self.zoom_field(&theme))
             .child(
                 menu_item(
                     "fit-page",
@@ -437,6 +438,65 @@ impl Reader {
                     this.set_zoom(Some(level), window, cx)
                 }))
             }))
+    }
+
+    fn zoom_field(&self, theme: &Theme) -> Div {
+        let field = &self.chrome.zoom_input;
+        let focused = self.chrome.input == Input::Zoom;
+        let invalid = self.chrome.zoom_invalid;
+        let digits = |text: &str| {
+            div()
+                .flex_none()
+                .text_color(theme.ink)
+                .child(text.to_string())
+        };
+        let value = if field.selected() {
+            div().child(digits(&field.text).bg(theme.select).rounded(px(2.0)))
+        } else {
+            div()
+                .flex()
+                .items_center()
+                .child(digits(field.before_cursor()))
+                .when(focused, |value| value.child(caret(theme)))
+                .child(digits(field.after_cursor()))
+        };
+        div()
+            .flex()
+            .flex_col()
+            .child(
+                div().px(px(4.0)).pt(px(4.0)).pb(px(8.0)).child(
+                    div()
+                        .h(px(30.0))
+                        .px(px(10.0))
+                        .flex()
+                        .items_center()
+                        .justify_end()
+                        .rounded(px(RADIUS))
+                        .border_1()
+                        .border_color(if invalid {
+                            theme.fail
+                        } else if focused {
+                            theme.accent
+                        } else {
+                            theme.hairline
+                        })
+                        .bg(theme.canvas)
+                        .font_family(Theme::mono_font())
+                        .text_size(px(12.0))
+                        .child(value)
+                        .child(div().pl(px(2.0)).text_color(theme.muted).child("%")),
+                ),
+            )
+            .when(invalid, |entry| {
+                entry.child(
+                    div()
+                        .px(px(6.0))
+                        .pb(px(6.0))
+                        .text_size(px(11.0))
+                        .text_color(theme.fail)
+                        .child("Enter a zoom from 25 to 400 percent."),
+                )
+            })
     }
 
     fn view_menu(&self, cx: &mut Context<Self>) -> impl IntoElement {

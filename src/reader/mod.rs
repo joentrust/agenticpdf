@@ -29,6 +29,7 @@ mod unlock;
 mod updates;
 mod view;
 mod viewing;
+mod zooming;
 
 use crate::pdf::{
     Event, ViewKey, Worker,
@@ -86,6 +87,7 @@ pub(crate) struct Reader {
     agent: agent::AgentPanel,
     updates: updates::Updates,
     scroll_probe: Option<crate::bench::ScrollProbe>,
+    zoom_probe: Option<(crate::bench::ScrollProbe, usize)>,
     signing: signing::Signing,
     preferences: crate::preferences::Preferences,
     bookmarks: crate::preferences::Bookmarks,
@@ -107,6 +109,19 @@ impl Reader {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> Self {
+        if let Some(pinches) = crate::ui::pinch::listen() {
+            cx.spawn_in(window, async move |this, cx| {
+                while let Ok(pinch) = pinches.recv().await {
+                    if this
+                        .update_in(cx, |this, window, cx| this.pinch(pinch, window, cx))
+                        .is_err()
+                    {
+                        return;
+                    }
+                }
+            })
+            .detach();
+        }
         cx.spawn_in(window, async move |this, cx| {
             while let Ok(event) = events.recv().await {
                 if this
@@ -219,6 +234,7 @@ impl Reader {
             agent: agent::AgentPanel::default(),
             updates,
             scroll_probe: crate::bench::scrolling().then(Default::default),
+            zoom_probe: crate::bench::zooming().then(Default::default),
             signing: signing::Signing::default(),
             preferences,
             bookmarks,

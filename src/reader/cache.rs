@@ -68,6 +68,14 @@ impl<T, K: Ord + Clone> PageCache<T, K> {
         evicted
     }
 
+    pub(super) fn find(&self, predicate: impl Fn(&K) -> bool) -> Option<&T> {
+        self.entries
+            .iter()
+            .rev()
+            .find(|(key, _)| predicate(key))
+            .map(|(_, value)| value)
+    }
+
     pub(super) fn remove_where(&mut self, predicate: impl Fn(&K) -> bool) -> Vec<T> {
         let keys: Vec<_> = self
             .entries
@@ -94,6 +102,16 @@ mod tests {
         assert!(cache.contains_key(&(2, 0)));
         assert!(cache.insert((3, 0), vec![3; 14]).is_empty());
         assert_eq!(cache.bytes, 20);
+    }
+
+    #[test]
+    fn find_returns_the_highest_matching_key() {
+        let mut cache = PageCache::new(8, 100, |value: &&str| value.len());
+        cache.insert((1, 100), "small");
+        cache.insert((1, 200), "large");
+        cache.insert((2, 300), "other");
+        assert_eq!(cache.find(|key| key.0 == 1), Some(&"large"));
+        assert_eq!(cache.find(|key| key.0 == 3), None);
     }
 
     #[test]

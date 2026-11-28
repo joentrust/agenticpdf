@@ -71,6 +71,7 @@ pub(super) enum Input {
     Agent,
     SignName,
     Password,
+    Zoom,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -117,6 +118,9 @@ pub(super) struct Chrome {
     pub sign_name: TextField,
     pub password: TextField,
     pub password_shown: bool,
+    pub zoom_input: TextField,
+    pub zoom_invalid: bool,
+    pub zoom_target: Option<(u64, f32)>,
     pub input: Input,
     pub toast: Option<Toast>,
     toast_counter: u64,
@@ -159,6 +163,9 @@ impl Chrome {
             sign_name: TextField::limited(super::typeset::MAX_NAME_CHARACTERS),
             password: TextField::limited(MAX_PASSWORD_CHARACTERS),
             password_shown: false,
+            zoom_input: TextField::digits(3),
+            zoom_invalid: false,
+            zoom_target: None,
             input: Input::None,
             toast: None,
             toast_counter: 0,
@@ -194,6 +201,11 @@ impl Reader {
             self.chrome.palette_index = 0;
             self.chrome.input = Input::Palette;
         } else if self.chrome.input == Input::Palette {
+            self.chrome.input = Input::None;
+        }
+        if self.chrome.overlay == Overlay::ZoomMenu {
+            self.open_zoom_field();
+        } else if self.chrome.input == Input::Zoom {
             self.chrome.input = Input::None;
         }
         if self.chrome.overlay == Overlay::Sign && self.chrome.sign_tab == 1 {
