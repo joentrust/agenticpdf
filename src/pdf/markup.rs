@@ -662,8 +662,7 @@ mod tests {
     #[ignore = "requires PDFium installed by scripts/setup_pdfium.py"]
     fn saved_marks_cover_the_marked_text_and_replace_the_file() {
         let engine = crate::pdf::bind().unwrap();
-        let directory =
-            std::env::temp_dir().join(format!("agenticpdf-markup-{}", std::process::id()));
+        let directory = std::env::temp_dir().join(format!("likoma-markup-{}", std::process::id()));
         fs::create_dir_all(&directory).unwrap();
         let path = directory.join("marked.pdf");
         fs::copy(
@@ -762,7 +761,7 @@ mod tests {
     fn saved_signatures_draw_their_strokes_inside_their_bounds() {
         let engine = crate::pdf::bind().unwrap();
         let directory =
-            std::env::temp_dir().join(format!("agenticpdf-signature-{}", std::process::id()));
+            std::env::temp_dir().join(format!("likoma-signature-{}", std::process::id()));
         fs::create_dir_all(&directory).unwrap();
         let path = directory.join("signed.pdf");
         fs::copy(
@@ -859,8 +858,7 @@ mod tests {
     #[ignore = "requires PDFium installed by scripts/setup_pdfium.py"]
     fn saved_stamps_draw_a_border_and_their_label_inside_their_bounds() {
         let engine = crate::pdf::bind().unwrap();
-        let directory =
-            std::env::temp_dir().join(format!("agenticpdf-stamp-{}", std::process::id()));
+        let directory = std::env::temp_dir().join(format!("likoma-stamp-{}", std::process::id()));
         fs::create_dir_all(&directory).unwrap();
         let path = directory.join("stamped.pdf");
         fs::copy(
@@ -929,8 +927,7 @@ mod tests {
     #[ignore = "requires PDFium installed by scripts/setup_pdfium.py"]
     fn saved_signature_images_fill_their_bounds() {
         let engine = crate::pdf::bind().unwrap();
-        let directory =
-            std::env::temp_dir().join(format!("agenticpdf-picture-{}", std::process::id()));
+        let directory = std::env::temp_dir().join(format!("likoma-picture-{}", std::process::id()));
         fs::create_dir_all(&directory).unwrap();
         let path = directory.join("pictured.pdf");
         fs::copy(
@@ -995,8 +992,7 @@ mod tests {
     #[ignore = "requires PDFium installed by scripts/setup_pdfium.py"]
     fn transparent_signature_pixels_leave_the_page_showing_through() {
         let engine = crate::pdf::bind().unwrap();
-        let directory =
-            std::env::temp_dir().join(format!("agenticpdf-clear-{}", std::process::id()));
+        let directory = std::env::temp_dir().join(format!("likoma-clear-{}", std::process::id()));
         fs::create_dir_all(&directory).unwrap();
         let path = directory.join("clear.pdf");
         fs::copy(

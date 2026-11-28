@@ -143,7 +143,7 @@ impl Reader {
                     .text_size(px(14.0))
                     .font_weight(FontWeight::SEMIBOLD)
                     .mb(px(2.0))
-                    .child(format!("Agentic PDF {} is ready", release.version)),
+                    .child(format!("Likoma {} is ready", release.version)),
             )
             .child(div().text_color(theme.muted).mb(px(12.0)).child(format!(
                 "You have {}. Downloaded and verified.",
@@ -194,23 +194,23 @@ impl Reader {
         };
         let column = div().flex().flex_col().items_start().gap(px(6.0));
         match &self.updates.phase {
-            Phase::Unavailable(reason) => column
-                .child(line(&theme, format!("Agentic PDF {label}")))
-                .child(
+            Phase::Unavailable(reason) => {
+                column.child(line(&theme, format!("Likoma {label}"))).child(
                     div()
                         .text_size(px(12.0))
                         .text_color(theme.faint)
                         .child(*reason),
-                ),
+                )
+            }
             Phase::Idle => column
-                .child(line(&theme, format!("You have Agentic PDF {label}")))
+                .child(line(&theme, format!("You have Likoma {label}")))
                 .child(check("update-check", "Check now")),
             Phase::Checking => column.child(line(&theme, "Checking for updates…")),
             Phase::Current { checked } => column
                 .child(marked(
                     &theme,
                     theme.ok,
-                    format!("Agentic PDF {label} is the latest version"),
+                    format!("Likoma {label} is the latest version"),
                 ))
                 .child(mono(elapsed(*checked)).text_color(theme.muted))
                 .child(check("update-check", "Check now")),
@@ -272,7 +272,7 @@ impl Reader {
                 ),
             Phase::Installing { version } => column.child(line(
                 &theme,
-                format!("Installing {version}. Agentic PDF will reopen in a moment."),
+                format!("Installing {version}. Likoma will reopen in a moment."),
             )),
             Phase::Failed { message, checked } => {
                 let retry = if self.updates.settings.automatic {

@@ -5,7 +5,7 @@ export function SiteFooter() {
   return (
     <footer>
       <div className="wrap">
-        <span>Agentic PDF, MIT licensed</span>
+        <span>Likoma, MIT licensed</span>
         <nav aria-label="Footer">
           <Link href="/download">Download</Link>
           <Link href="/agent">Agent</Link>

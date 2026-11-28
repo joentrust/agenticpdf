@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Agentic PDF, the PDF reader that reads with you",
-    template: "%s | Agentic PDF",
+    default: "Likoma, the PDF reader that reads with you",
+    template: "%s | Likoma",
   },
   description:
     "A fast, native PDF reader for macOS and Windows built in Rust. Next, the AI agents you already use will read alongside you.",

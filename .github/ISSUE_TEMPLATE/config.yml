@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
   - name: Report a security vulnerability
-    url: https://github.com/joelfickson/agenticpdf/security/advisories/new
+    url: https://github.com/joentrust/likoma/security/advisories/new
     about: Report security issues privately. Do not open a public issue.
-  - name: Agentic PDF website
+  - name: Likoma website
     url: https://agentic-pdf-eta.vercel.app
     about: Downloads, the agent roadmap and the changelog.

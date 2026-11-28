@@ -67,7 +67,7 @@ def render(presentation, standard, small, pixels):
 
 def write_icns(path, standard, small):
     with tempfile.TemporaryDirectory() as temporary:
-        iconset = Path(temporary) / "agenticpdf.iconset"
+        iconset = Path(temporary) / "likoma.iconset"
         iconset.mkdir()
         for name, pixels in ICONSET:
             (iconset / name).write_bytes(render(macos_presentation, standard, small, pixels))
@@ -92,11 +92,11 @@ def main():
     if shutil.which("rsvg-convert") is None:
         raise SystemExit("rsvg-convert is required (brew install librsvg)")
     brand = Path(__file__).resolve().parent.parent / "assets/brand"
-    standard = artwork(brand / "agenticpdf.svg")
-    small = artwork(brand / "agenticpdf-small.svg")
-    write_icns(brand / "agenticpdf.icns", standard, small)
-    write_ico(brand / "agenticpdf.ico", standard, small)
-    print(f"wrote {brand / 'agenticpdf.icns'} and {brand / 'agenticpdf.ico'}")
+    standard = artwork(brand / "likoma.svg")
+    small = artwork(brand / "likoma-small.svg")
+    write_icns(brand / "likoma.icns", standard, small)
+    write_ico(brand / "likoma.ico", standard, small)
+    print(f"wrote {brand / 'likoma.icns'} and {brand / 'likoma.ico'}")
 
 
 if __name__ == "__main__":

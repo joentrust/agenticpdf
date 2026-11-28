@@ -1,11 +1,11 @@
 [package]
-name = "agenticpdf"
+name = "likoma"
 version = "0.3.0"
 edition = "2024"
 license = "MIT"
-repository = "https://github.com/joelfickson/agenticpdf"
+repository = "https://github.com/joentrust/likoma"
 description = "A lightweight desktop PDF reader for macOS and Windows"
-default-run = "agenticpdf"
+default-run = "likoma"
 
 [dependencies]
 anyhow = "1"

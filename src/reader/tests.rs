@@ -1019,7 +1019,7 @@ fn last_session_tabs_reopen_only_when_asked_and_skip_missing_files(cx: &mut Test
     let (reader, cx) = cx
         .add_window_view(|window, cx| Reader::new(Vec::new(), Worker::idle(), events, window, cx));
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let store = std::env::temp_dir().join(format!("agenticpdf-session-ui-{}", std::process::id()));
+    let store = std::env::temp_dir().join(format!("likoma-session-ui-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&store);
     let fixtures = [
         root.join("tests/fixtures/reading.pdf"),
@@ -1611,7 +1611,7 @@ fn draw_and_shape_tools_add_ink_and_rectangles_by_dragging(cx: &mut TestAppConte
 fn image_signatures_load_scale_down_place_and_reject_other_files(cx: &mut TestAppContext) {
     use crate::pdf::markup::Edit;
 
-    let folder = std::env::temp_dir().join(format!("agenticpdf-sign-image-{}", std::process::id()));
+    let folder = std::env::temp_dir().join(format!("likoma-sign-image-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&folder);
     std::fs::create_dir_all(&folder).unwrap();
     let small = folder.join("small.png");

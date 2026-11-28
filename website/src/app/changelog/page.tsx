@@ -17,7 +17,7 @@ import "./changelog.css";
 export const metadata: Metadata = {
   title: "Changelog",
   description:
-    "Every Agentic PDF release and the changes merged since, generated from GitHub.",
+    "Every Likoma release and the changes merged since, generated from GitHub.",
 };
 
 const UNRELEASED_ID = "unreleased";

@@ -406,8 +406,7 @@ mod tests {
     use super::*;
 
     fn store(name: &str) -> PathBuf {
-        let directory =
-            std::env::temp_dir().join(format!("agenticpdf-{name}-{}", std::process::id()));
+        let directory = std::env::temp_dir().join(format!("likoma-{name}-{}", std::process::id()));
         let _ = fs::remove_dir_all(&directory);
         directory
     }

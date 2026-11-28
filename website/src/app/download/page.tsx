@@ -17,7 +17,7 @@ import "./download.css";
 export const metadata: Metadata = {
   title: "Download",
   description:
-    "Download Agentic PDF for macOS on Apple silicon or Intel, or Windows x64. Install steps, checksums and earlier versions.",
+    "Download Likoma for macOS on Apple silicon or Intel, or Windows x64. Install steps, checksums and earlier versions.",
 };
 
 const PLATFORM_LABELS: Record<Platform, { system: string; variant: string }> = {
@@ -101,17 +101,13 @@ function SourceCommands() {
     <div className="source-commands">
       <h3>Clone</h3>
       <pre>
-        {
-          "git clone https://github.com/joelfickson/agenticpdf.git\ncd agenticpdf"
-        }
+        {"git clone https://github.com/joentrust/likoma.git\ncd likoma"}
       </pre>
       <h3>Run</h3>
       <pre>{"uv run scripts/setup_pdfium.py\ncargo run --release"}</pre>
       <h3>Package a macOS app</h3>
       <pre>
-        {
-          'uv run scripts/package_macos.py\nopen "target/release/Agentic PDF.app"'
-        }
+        {'uv run scripts/package_macos.py\nopen "target/release/Likoma.app"'}
       </pre>
     </div>
   );
@@ -129,7 +125,7 @@ export default async function DownloadPage() {
         <div className="wrap">
           <div className="eyebrow">Download</div>
           <h1>
-            Get Agentic PDF <em>{latest.tag}</em>
+            Get Likoma <em>{latest.tag}</em>
           </h1>
           <p className="lede">
             Free and open source. One zip per platform, about{" "}
@@ -178,7 +174,7 @@ export default async function DownloadPage() {
                   </li>
                   <li>
                     <span>
-                      Move <b>Agentic PDF</b> to your{" "}
+                      Move <b>Likoma</b> to your{" "}
                       <span className="path">Applications</span> folder.
                     </span>
                   </li>
@@ -192,7 +188,7 @@ export default async function DownloadPage() {
                     <span>
                       Open <b>System Settings</b>, go to{" "}
                       <b>Privacy and Security</b>, and click <b>Open Anyway</b>{" "}
-                      next to the Agentic PDF message.
+                      next to the Likoma message.
                     </span>
                   </li>
                 </ol>
@@ -208,13 +204,13 @@ export default async function DownloadPage() {
                   <li>
                     <span>
                       Keep <span className="path">pdfium.dll</span> in the same
-                      folder as <span className="path">agenticpdf.exe</span>.
+                      folder as <span className="path">likoma.exe</span>.
                     </span>
                   </li>
                   <li>
                     <span>
-                      Run <span className="path">agenticpdf.exe</span>. This
-                      build is not code signed, so SmartScreen may warn on first
+                      Run <span className="path">likoma.exe</span>. This build
+                      is not code signed, so SmartScreen may warn on first
                       launch.
                     </span>
                   </li>

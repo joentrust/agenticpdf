@@ -81,7 +81,7 @@ export function MobileMenu() {
           <div className="menu-bar">
             <Link className="brand" href="/" onClick={() => setOpen(false)}>
               <BrandMark />
-              Agentic PDF
+              Likoma
             </Link>
             <button
               type="button"

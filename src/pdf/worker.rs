@@ -886,7 +886,7 @@ mod tests {
         };
 
         let directory =
-            std::env::temp_dir().join(format!("agenticpdf-worker-save-{}", std::process::id()));
+            std::env::temp_dir().join(format!("likoma-worker-save-{}", std::process::id()));
         std::fs::create_dir_all(&directory).unwrap();
         let path = directory.join("saved.pdf");
         std::fs::copy(
@@ -1003,8 +1003,7 @@ mod tests {
             text::TextRect,
         };
 
-        let directory =
-            std::env::temp_dir().join(format!("agenticpdf-locked-{}", std::process::id()));
+        let directory = std::env::temp_dir().join(format!("likoma-locked-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&directory);
         std::fs::create_dir_all(&directory).unwrap();
         let fixtures = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures");
@@ -1118,7 +1117,7 @@ mod tests {
         use crate::pdf::OrganizeJob;
 
         let directory =
-            std::env::temp_dir().join(format!("agenticpdf-organize-{}", std::process::id()));
+            std::env::temp_dir().join(format!("likoma-organize-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&directory);
         std::fs::create_dir_all(&directory).unwrap();
         let fixtures = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures");
@@ -1254,8 +1253,7 @@ mod tests {
             text::TextRect,
         };
 
-        let directory =
-            std::env::temp_dir().join(format!("agenticpdf-export-{}", std::process::id()));
+        let directory = std::env::temp_dir().join(format!("likoma-export-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&directory);
         std::fs::create_dir_all(&directory).unwrap();
         let fixtures = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures");

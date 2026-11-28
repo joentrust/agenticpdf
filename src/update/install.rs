@@ -137,12 +137,12 @@ pub(crate) fn clean(folder: &Path) -> Result<()> {
 }
 
 pub(crate) fn writable(folder: &Path) -> Result<()> {
-    let probe = folder.join(format!(".agenticpdf-write-test-{}", std::process::id()));
+    let probe = folder.join(format!(".likoma-write-test-{}", std::process::id()));
     fs::write(&probe, b"")
         .and_then(|_| fs::remove_file(&probe))
         .with_context(|| {
             format!(
-                "Agentic PDF cannot write to {}. Move it to a folder you own to install updates.",
+                "Likoma cannot write to {}. Move it to a folder you own to install updates.",
                 folder.display()
             )
         })
@@ -155,7 +155,7 @@ mod tests {
 
     fn scratch(name: &str) -> PathBuf {
         let root =
-            std::env::temp_dir().join(format!("agenticpdf-install-{name}-{}", std::process::id()));
+            std::env::temp_dir().join(format!("likoma-install-{name}-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(&root).unwrap();
         root
@@ -173,17 +173,17 @@ mod tests {
     #[test]
     fn bundle_swap_replaces_the_target_and_keeps_the_previous_copy_aside() {
         let root = scratch("bundle");
-        let target = root.join("apps/Agentic PDF.app");
-        let staged = root.join("cache/Agentic PDF.app");
-        write(&target.join("Contents/MacOS/agenticpdf"), "old");
+        let target = root.join("apps/Likoma.app");
+        let staged = root.join("cache/Likoma.app");
+        write(&target.join("Contents/MacOS/likoma"), "old");
         write(&target.join("Contents/Resources/gone"), "old only");
-        write(&staged.join("Contents/MacOS/agenticpdf"), "new");
+        write(&staged.join("Contents/MacOS/likoma"), "new");
         swap(&target, &staged, copy_tree).unwrap();
-        assert_eq!(read(&target.join("Contents/MacOS/agenticpdf")), "new");
+        assert_eq!(read(&target.join("Contents/MacOS/likoma")), "new");
         assert!(!target.join("Contents/Resources/gone").exists());
-        let previous = root.join("apps/.Agentic PDF.app.previous");
-        assert_eq!(read(&previous.join("Contents/MacOS/agenticpdf")), "old");
-        assert_eq!(read(&staged.join("Contents/MacOS/agenticpdf")), "new");
+        let previous = root.join("apps/.Likoma.app.previous");
+        assert_eq!(read(&previous.join("Contents/MacOS/likoma")), "old");
+        assert_eq!(read(&staged.join("Contents/MacOS/likoma")), "new");
         clean(&root.join("apps")).unwrap();
         assert!(!previous.exists());
         assert!(target.exists());
@@ -193,7 +193,7 @@ mod tests {
     #[test]
     fn failed_copies_leave_the_installed_app_untouched() {
         let root = scratch("failed-copy");
-        let target = root.join("Agentic PDF.app");
+        let target = root.join("Likoma.app");
         write(&target.join("binary"), "old");
         let failed = swap(&target, &root.join("missing.app"), copy_tree);
         assert!(failed.is_err());
@@ -204,33 +204,30 @@ mod tests {
     #[test]
     fn folder_swap_replaces_each_staged_entry_and_rolls_back_on_failure() {
         let root = scratch("folder");
-        let folder = root.join("Agentic PDF");
+        let folder = root.join("Likoma");
         let staged = root.join("staged");
-        write(&folder.join("agenticpdf.exe"), "old exe");
+        write(&folder.join("likoma.exe"), "old exe");
         write(&folder.join("pdfium.dll"), "old dll");
         write(&folder.join("licenses/PDFium-LICENSE"), "old license");
         write(&folder.join("notes.txt"), "user file");
-        write(&staged.join("agenticpdf.exe"), "new exe");
+        write(&staged.join("likoma.exe"), "new exe");
         write(&staged.join("pdfium.dll"), "new dll");
         write(&staged.join("licenses/PDFium-LICENSE"), "new license");
         swap_entries(&folder, &staged, copy_tree).unwrap();
-        assert_eq!(read(&folder.join("agenticpdf.exe")), "new exe");
+        assert_eq!(read(&folder.join("likoma.exe")), "new exe");
         assert_eq!(read(&folder.join("pdfium.dll")), "new dll");
         assert_eq!(read(&folder.join("licenses/PDFium-LICENSE")), "new license");
         assert_eq!(read(&folder.join("notes.txt")), "user file");
-        assert_eq!(read(&folder.join(".agenticpdf.exe.previous")), "old exe");
+        assert_eq!(read(&folder.join(".likoma.exe.previous")), "old exe");
         clean(&folder).unwrap();
         let mut names: Vec<_> = fs::read_dir(&folder)
             .unwrap()
             .map(|entry| entry.unwrap().file_name().into_string().unwrap())
             .collect();
         names.sort();
-        assert_eq!(
-            names,
-            ["agenticpdf.exe", "licenses", "notes.txt", "pdfium.dll"]
-        );
+        assert_eq!(names, ["licenses", "likoma.exe", "notes.txt", "pdfium.dll"]);
 
-        write(&staged.join("agenticpdf.exe"), "newer exe");
+        write(&staged.join("likoma.exe"), "newer exe");
         let failing = |source: &Path, destination: &Path| {
             if source.ends_with("pdfium.dll") {
                 bail!("disk full")
@@ -238,7 +235,7 @@ mod tests {
             copy_tree(source, destination)
         };
         assert!(swap_entries(&folder, &staged, failing).is_err());
-        assert_eq!(read(&folder.join("agenticpdf.exe")), "new exe");
+        assert_eq!(read(&folder.join("likoma.exe")), "new exe");
         assert_eq!(read(&folder.join("licenses/PDFium-LICENSE")), "new license");
         assert_eq!(read(&folder.join("pdfium.dll")), "new dll");
         let _ = fs::remove_dir_all(root);

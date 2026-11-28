@@ -28,33 +28,53 @@ struct Home {
 
 const HOME: Home = if cfg!(debug_assertions) {
     Home {
-        name: "Agentic PDF Debug",
-        identifier: "app.agenticpdf.desktop.debug",
-        folder: "agenticpdf-debug",
+        name: "Likoma Debug",
+        identifier: "app.likoma.desktop.debug",
+        folder: "likoma-debug",
     }
 } else {
     Home {
-        name: "Agentic PDF",
-        identifier: "app.agenticpdf.desktop",
-        folder: "agenticpdf",
+        name: "Likoma",
+        identifier: "app.likoma.desktop",
+        folder: "likoma",
     }
 };
 
-const FORMER_HOME: Home = if cfg!(debug_assertions) {
-    Home {
-        name: "PDF Reader Debug",
-        identifier: "org.pdfreader.desktop.debug",
-        folder: "pdf-reader-debug",
-    }
+const FORMER_HOMES: [Home; 2] = if cfg!(debug_assertions) {
+    [
+        Home {
+            name: "Agentic PDF Debug",
+            identifier: "app.agenticpdf.desktop.debug",
+            folder: "agenticpdf-debug",
+        },
+        Home {
+            name: "PDF Reader Debug",
+            identifier: "org.pdfreader.desktop.debug",
+            folder: "pdf-reader-debug",
+        },
+    ]
 } else {
-    Home {
-        name: "PDF Reader",
-        identifier: "org.pdfreader.desktop",
-        folder: "pdf-reader",
-    }
+    [
+        Home {
+            name: "Agentic PDF",
+            identifier: "app.agenticpdf.desktop",
+            folder: "agenticpdf",
+        },
+        Home {
+            name: "PDF Reader",
+            identifier: "org.pdfreader.desktop",
+            folder: "pdf-reader",
+        },
+    ]
 };
 
-const CARRIED_FILES: [&str; 2] = ["recent.tsv", "updates.conf"];
+const CARRIED_FILES: [&str; 5] = [
+    "recent.tsv",
+    "updates.conf",
+    "preferences.conf",
+    "session.tsv",
+    "bookmarks.tsv",
+];
 
 fn location(home: &Home) -> Option<PathBuf> {
     if cfg!(target_os = "macos") {
@@ -81,9 +101,16 @@ pub(crate) fn carry_over_former_data() -> Result<()> {
     if cfg!(test) {
         return Ok(());
     }
-    match (location(&FORMER_HOME), data_dir()) {
-        (Some(former), Some(current)) => carry_over(&former, &current),
-        _ => Ok(()),
+    let Some(current) = data_dir() else {
+        return Ok(());
+    };
+    match FORMER_HOMES
+        .iter()
+        .filter_map(location)
+        .find(|former| former.is_dir())
+    {
+        Some(former) => carry_over(&former, &current),
+        None => Ok(()),
     }
 }
 
@@ -230,14 +257,14 @@ mod tests {
 
     fn temp_store(name: &str) -> PathBuf {
         let directory =
-            std::env::temp_dir().join(format!("agenticpdf-recent-{name}-{}", std::process::id()));
+            std::env::temp_dir().join(format!("likoma-recent-{name}-{}", std::process::id()));
         let _ = fs::remove_dir_all(&directory);
         directory.join("nested").join(FILE_NAME)
     }
 
     #[test]
     fn former_settings_are_copied_once_and_never_overwrite_new_ones() {
-        let root = std::env::temp_dir().join(format!("agenticpdf-carry-{}", std::process::id()));
+        let root = std::env::temp_dir().join(format!("likoma-carry-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         let (former, current) = (root.join("former"), root.join("current"));
         carry_over(&former, &current).unwrap();
@@ -245,6 +272,8 @@ mod tests {
         fs::create_dir_all(&former).unwrap();
         fs::write(former.join("recent.tsv"), "old recent").unwrap();
         fs::write(former.join("updates.conf"), "old updates").unwrap();
+        fs::write(former.join("preferences.conf"), "theme=dark").unwrap();
+        fs::write(former.join("bookmarks.tsv"), "old bookmarks").unwrap();
         fs::write(former.join("unrelated.txt"), "left behind").unwrap();
         carry_over(&former, &current).unwrap();
         assert_eq!(
@@ -255,6 +284,15 @@ mod tests {
             fs::read_to_string(current.join("updates.conf")).unwrap(),
             "old updates"
         );
+        assert_eq!(
+            fs::read_to_string(current.join("preferences.conf")).unwrap(),
+            "theme=dark"
+        );
+        assert_eq!(
+            fs::read_to_string(current.join("bookmarks.tsv")).unwrap(),
+            "old bookmarks"
+        );
+        assert!(!current.join("session.tsv").exists());
         assert!(!current.join("unrelated.txt").exists());
         assert!(former.join("recent.tsv").exists());
         fs::write(current.join("recent.tsv"), "new recent").unwrap();

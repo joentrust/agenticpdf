@@ -97,7 +97,7 @@ impl Updates {
             return;
         };
         if let Err(error) = update::install(build, staged, None) {
-            eprintln!("Agentic PDF could not install the downloaded update. {error:#}");
+            eprintln!("Likoma could not install the downloaded update. {error:#}");
         }
     }
 }
@@ -111,9 +111,7 @@ impl Reader {
             cx.background_executor().timer(FIRST_CHECK_DELAY).await;
             cx.background_spawn(async {
                 if let Err(error) = update::clean_leftovers() {
-                    eprintln!(
-                        "Agentic PDF could not remove files left by an earlier update. {error:#}"
-                    );
+                    eprintln!("Likoma could not remove files left by an earlier update. {error:#}");
                 }
             })
             .detach();
@@ -282,7 +280,7 @@ impl Reader {
                 Ok(()) => cx.quit(),
                 Err(error) => {
                     this.updates.phase = Phase::Failed {
-                        message: format!("Agentic PDF {version} could not be installed. {error:#}"),
+                        message: format!("Likoma {version} could not be installed. {error:#}"),
                         checked: Instant::now(),
                     };
                     this.chrome.settings_section = UPDATES_SECTION;

@@ -6,7 +6,7 @@ import "./privacy.css";
 export const metadata: Metadata = {
   title: "Privacy",
   description:
-    "How Agentic PDF handles your data: no account, no tracking, no uploads, a short local list of recent files you can clear, and an update check you can turn off.",
+    "How Likoma handles your data: no account, no tracking, no uploads, a short local list of recent files you can clear, and an update check you can turn off.",
 };
 
 const PROMISES = [
@@ -62,9 +62,9 @@ export default function PrivacyPage() {
             Your documents stay <em>yours.</em>
           </h1>
           <p className="lede">
-            Agentic PDF reads your files on your own computer. This page
-            explains, in plain language, what the app does with your data, what
-            it keeps, and how to remove it.
+            Likoma reads your files on your own computer. This page explains, in
+            plain language, what the app does with your data, what it keeps, and
+            how to remove it.
           </p>
           <div className="updated">Last updated 10 November 2026</div>
           <div className="promises">
@@ -126,13 +126,12 @@ export default function PrivacyPage() {
               <li>
                 <span>macOS</span>
                 <code>
-                  ~/Library/Application
-                  Support/app.agenticpdf.desktop/recent.tsv
+                  ~/Library/Application Support/app.likoma.desktop/recent.tsv
                 </code>
               </li>
               <li>
                 <span>Windows</span>
-                <code>%APPDATA%\Agentic PDF\recent.tsv</code>
+                <code>%APPDATA%\Likoma\recent.tsv</code>
               </li>
             </ul>
             <p>The list never leaves your computer.</p>
@@ -162,13 +161,12 @@ export default function PrivacyPage() {
               <li>
                 <span>macOS</span>
                 <code>
-                  ~/Library/Application
-                  Support/app.agenticpdf.desktop/updates.conf
+                  ~/Library/Application Support/app.likoma.desktop/updates.conf
                 </code>
               </li>
               <li>
                 <span>Windows</span>
-                <code>%APPDATA%\Agentic PDF\updates.conf</code>
+                <code>%APPDATA%\Likoma\updates.conf</code>
               </li>
             </ul>
             <p>
@@ -267,8 +265,8 @@ export default function PrivacyPage() {
           </div>
           <div className="body">
             <p>
-              Agentic PDF is open source, so every claim on this page can be
-              checked in the <a href={REPO_URL}>source code</a>.
+              Likoma is open source, so every claim on this page can be checked
+              in the <a href={REPO_URL}>source code</a>.
             </p>
             <p>
               To report a privacy concern, open an issue on{" "}

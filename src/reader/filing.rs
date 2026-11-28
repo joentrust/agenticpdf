@@ -325,7 +325,7 @@ impl Reader {
             fit: self.chrome.print_scale == 0,
             both_sides: self.chrome.print_sides == 1,
         };
-        let spool = std::env::temp_dir().join(format!("agenticpdf-print-{}", std::process::id()));
+        let spool = std::env::temp_dir().join(format!("likoma-print-{}", std::process::id()));
         if let Err(error) = std::fs::create_dir_all(&spool) {
             self.show_toast(
                 Status::Warn,
@@ -453,7 +453,7 @@ mod tests {
 
     #[test]
     fn export_names_never_reuse_an_existing_file_or_numbered_set() {
-        let folder = std::env::temp_dir().join(format!("agenticpdf-vacant-{}", std::process::id()));
+        let folder = std::env::temp_dir().join(format!("likoma-vacant-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&folder);
         std::fs::create_dir_all(&folder).unwrap();
         assert_eq!(vacant(&folder, "Report", "png"), folder.join("Report.png"));

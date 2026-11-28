@@ -92,17 +92,14 @@ const USES = [
 
 const FAQ = [
   [
-    "Does Agentic PDF send my documents anywhere?",
+    "Does Likoma send my documents anywhere?",
     "No. The reader works entirely on your computer. When the agent panel arrives, your document is only shared with the agent you choose, through that agent's own connection.",
   ],
   [
     "Which agents will work?",
     "Agents that speak the Agent Client Protocol, including Claude Code, Codex and Gemini CLI through their ACP adapters. You use your existing subscription.",
   ],
-  [
-    "Is it free?",
-    "Yes. Agentic PDF is free and open source under the MIT license.",
-  ],
+  ["Is it free?", "Yes. Likoma is free and open source under the MIT license."],
   [
     "Can it read scanned PDFs?",
     "Not yet. Pages without a text layer are reported as unreadable. On-device OCR is being considered for the agent release.",
@@ -155,9 +152,9 @@ export default async function HomePage() {
               Fast, calm, and <em>native</em> on your desktop.
             </h2>
             <p>
-              No browser engine, no account, no upload. Agentic PDF is written
-              in Rust on the GPU-accelerated GPUI framework, with Google's
-              PDFium engine doing the rendering.
+              No browser engine, no account, no upload. Likoma is written in
+              Rust on the GPU-accelerated GPUI framework, with Google's PDFium
+              engine doing the rendering.
             </p>
           </div>
           <div className="list reveal">
@@ -181,11 +178,10 @@ export default async function HomePage() {
               first.
             </h2>
             <p>
-              Agentic PDF connects to coding and research agents installed on
-              your computer through the open Agent Client Protocol. No API keys
-              to paste and no new subscription. The reader gives the agent
-              precise tools for your document, and keeps you in control of every
-              change.
+              Likoma connects to coding and research agents installed on your
+              computer through the open Agent Client Protocol. No API keys to
+              paste and no new subscription. The reader gives the agent precise
+              tools for your document, and keeps you in control of every change.
             </p>
             <p className="issue-link">
               <a className="status soon" href={AGENT_ISSUE_URL}>

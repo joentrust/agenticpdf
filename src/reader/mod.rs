@@ -163,7 +163,7 @@ impl Reader {
         cx.on_app_quit(|this, cx| {
             this.persist_recent(cx);
             if let Err(error) = this.save_session() {
-                eprintln!("Agentic PDF could not remember the open tabs. {error:#}");
+                eprintln!("Likoma could not remember the open tabs. {error:#}");
             }
             this.updates.install_on_quit();
             async {}

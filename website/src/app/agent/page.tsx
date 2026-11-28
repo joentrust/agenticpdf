@@ -7,7 +7,7 @@ import "./agent.css";
 export const metadata: Metadata = {
   title: "Agent",
   description:
-    "How Agentic PDF will connect to the AI agent you already use to find, summarize and cite pages, and ask before it changes anything. In development.",
+    "How Likoma will connect to the AI agent you already use to find, summarize and cite pages, and ask before it changes anything. In development.",
 };
 
 type Message = {
@@ -165,8 +165,8 @@ export default function AgentPage() {
             Bring the agent <em>you already use.</em>
           </h1>
           <p className="lede">
-            Agentic PDF will connect to the AI agent installed on your computer
-            and let it read your document with you.{" "}
+            Likoma will connect to the AI agent installed on your computer and
+            let it read your document with you.{" "}
             <b>
               It finds, summarizes and cites pages, and it asks before it
               changes anything.
@@ -195,7 +195,7 @@ export default function AgentPage() {
           <figure className="map reveal" aria-label="How the pieces connect">
             <div className="track">
               <div className="node">
-                <b>Agentic PDF</b>
+                <b>Likoma</b>
                 <span>the reader</span>
               </div>
               <div className="link">

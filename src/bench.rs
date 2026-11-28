@@ -5,7 +5,7 @@ use std::sync::{
 };
 use std::time::Instant;
 
-const VARIABLE: &str = "AGENTICPDF_BENCH";
+const VARIABLE: &str = "LIKOMA_BENCH";
 const FIRST_PAGE: &str = "first-page";
 
 static STARTED: OnceLock<Instant> = OnceLock::new();

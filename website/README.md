@@ -1,6 +1,6 @@
-# Agentic PDF website
+# Likoma website
 
-The public site for Agentic PDF: home, download, agent, changelog and privacy pages. Built with Next.js 16 (App Router, Cache Components), React 19 and plain CSS ported from the approved design mocks, which are kept locally and not committed.
+The public site for Likoma: home, download, agent, changelog and privacy pages. Built with Next.js 16 (App Router, Cache Components), React 19 and plain CSS ported from the approved design mocks, which are kept locally and not committed.
 
 ## Develop
 
@@ -20,7 +20,7 @@ pnpm build
 
 ## Data
 
-Release information comes from the GitHub REST API for `joelfickson/agenticpdf` and is cached for an hour (`cacheLife("hours")`, tag `releases`). Responses are validated with zod, and a failed or malformed response fails the build instead of rendering stale or invented data.
+Release information comes from the GitHub REST API for `joentrust/likoma` and is cached for an hour (`cacheLife("hours")`, tag `releases`). Responses are validated with zod, and a failed or malformed response fails the build instead of rendering stale or invented data.
 
 Unauthenticated requests are limited by GitHub. Set `GITHUB_TOKEN` (a token with public read access) in the deployment environment to raise the limit. The site works without it.
 

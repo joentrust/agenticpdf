@@ -10,7 +10,7 @@ export function SiteHeader() {
         <div className="inner">
           <Link className="brand" href="/">
             <BrandMark />
-            Agentic PDF
+            Likoma
           </Link>
           <NavLinks />
           <Link className="btn small primary" href="/download">

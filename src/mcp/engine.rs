@@ -229,8 +229,7 @@ mod tests {
                 .unwrap_err()
                 .contains("could not be opened")
         );
-        let directory =
-            std::env::temp_dir().join(format!("agenticpdf-dir-{}.pdf", std::process::id()));
+        let directory = std::env::temp_dir().join(format!("likoma-dir-{}.pdf", std::process::id()));
         std::fs::create_dir_all(&directory).unwrap();
         assert!(
             resolve(directory.to_str().unwrap())
